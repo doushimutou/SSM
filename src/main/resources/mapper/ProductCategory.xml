@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayt.dao.ProductCategoryDao">
+    <resultMap id="productcategory" type="com.ayt.entity.ProductCategory">
+        <id column="product_category_id"  property="productCategoryId"/>
+        <id column="product_category_name" property="productCategoryName"/>
+        <id column="priority" property="priority"/>
+        <id column="create_time" property="createTime"/>
+        <id column="lastedit_time" property="lastEditTime"/>
+        <association property="shop" column="shop_id" javaType="com.ayt.entity.Shop">
+            <id column="shop_id" property="shopId"/>
+            <result column="shop_name" property="shopName"/>
+        </association>
+    </resultMap>
+    <select id="queryByShopId" resultType="com.ayt.entity.ProductCategory">
+        SELECT * FROM tb_product_category WHERE shop_id=#{shopId};
+    </select>
+    <!--collection,item的名称任意，separator代表分隔符-->
+    <insert id="batchInsertProductCategory" parameterType="java.util.List">
+        idINSERT  into
+        tb_product_category (product_category_id,product_category_name,
+        priority,create_time,lastedit_time,shop_id) VALUES
+
+        <foreach collection="list" item="productCategory" index="index" separator=",">
+            #{productCategory.productCategoryId}
+            #{productCategory.productCategoryName}
+            #{productCategory.priority}
+            #{productCategory.createTime}
+            #{productCategory.lastEditTime}
+            #{productCategory.shopId}
+        </foreach>
+    </insert>
+    <delete id="deleteProductCategory" >
+        DELETE  from tb_product_category
+        WHERE product_category_id=#{} and shop_id=#{shopId}
+    </delete>
+</mapper>
